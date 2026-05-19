@@ -24,6 +24,8 @@ helm_envoy_gateway_helm_release_namespace: envoy-gateway-system
 helm_envoy_gateway_helm_release_values:
   deployment:
     envoyGateway:
+      image:
+        repository: docker.io/envoyproxy/gateway
       imagePullPolicy: IfNotPresent
 #      securityContext:
 #        allowPrivilegeEscalation: true
