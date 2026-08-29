@@ -27,38 +27,38 @@ helm_envoy_gateway_helm_release_values:
       image:
         repository: docker.io/envoyproxy/gateway
       imagePullPolicy: IfNotPresent
-#      securityContext:
-#        allowPrivilegeEscalation: true
-#        privileged: true
+      securityContext:
+        allowPrivilegeEscalation: true
+        privileged: true
       replicas: 1
-#  service:
-#    type: NodePort
-#  config:
-#    envoyGateway:
-#      envoyProxy:
-#        provider:
-#          type: Kubernetes
-#          kubernetes:
-#            useListenerPortAsContainerPort: true
-#            envoyDeployment:
-#              replicas: 1
-#              patch:
-#                type: StrategicMerge
-#                value:
-#                  spec:
-#                    template:
-#                      spec:
-#                        hostNetwork: true
-#                        dnsPolicy: ClusterFirstWithHostNet
-#                        securityContext:
-#                          allowPrivilegeEscalation: true
-#                          privileged: true
-#                          sysctls: []
-#                        containers:
-#                          - name: envoy
-#                            securityContext:
-#                              allowPrivilegeEscalation: true
-#                              privileged: true
-#                              sysctls: []
-#            envoyService:
-#              type: NodePort
+  service:
+    type: NodePort
+  config:
+    envoyGateway:
+      envoyProxy:
+        provider:
+          type: Kubernetes
+          kubernetes:
+            useListenerPortAsContainerPort: true
+            envoyDeployment:
+              replicas: 1
+              patch:
+                type: StrategicMerge
+                value:
+                  spec:
+                    template:
+                      spec:
+                        hostNetwork: true
+                        dnsPolicy: ClusterFirstWithHostNet
+                        securityContext:
+                          allowPrivilegeEscalation: true
+                          privileged: true
+                          sysctls: []
+                        containers:
+                          - name: envoy
+                            securityContext:
+                              allowPrivilegeEscalation: true
+                              privileged: true
+                              sysctls: []
+            envoyService:
+              type: NodePort
