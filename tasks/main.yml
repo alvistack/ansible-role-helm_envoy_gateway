@@ -141,12 +141,20 @@
           - name: http
             protocol: HTTP
             port: 80
+            protocolSettings:
+              http:
+                http2:
+                  enabled: false
             allowedRoutes:
               namespaces:
                 from: All
           - name: https
             protocol: HTTPS
             port: 443
+            protocolSettings:
+              http:
+                http2:
+                  enabled: false
             allowedRoutes:
               namespaces:
                 from: All
@@ -180,6 +188,58 @@
           - group: gateway.networking.k8s.io
             kind: Gateway
             name: envoy-gateway
+  when: inventory_hostname == groups['kube_master'][0]
+  register: result
+  changed_when: result is not succeeded
+  until: result is succeeded
+  retries: 60
+
+- name: kubectl create SecurityPolicy
+  vars:
+    ansible_python_interpreter: python3
+  kubernetes.core.k8s:
+    state: present
+    wait: true
+    definition:
+      apiVersion: gateway.envoyproxy.io/v1alpha1
+      kind: SecurityPolicy
+      metadata:
+        name: envoy-gateway
+        namespace: "{{ helm_envoy_gateway_helm_release_namespace }}"
+      spec:
+        targetRefs:
+          - group: gateway.networking.k8s.io
+            kind: Gateway
+            name: envoy-gateway
+        headers:
+          values:
+            - name: Strict-Transport-Security
+              value: max-age=63072000; includeSubDomains; preload
+  when: inventory_hostname == groups['kube_master'][0]
+  register: result
+  changed_when: result is not succeeded
+  until: result is succeeded
+  retries: 60
+
+- name: kubectl create BackendTrafficPolicy
+  vars:
+    ansible_python_interpreter: python3
+  kubernetes.core.k8s:
+    state: present
+    wait: true
+    definition:
+      apiVersion: gateway.envoyproxy.io/v1alpha1
+      kind: BackendTrafficPolicy
+      metadata:
+        name: envoy-gateway
+        namespace: "{{ helm_envoy_gateway_helm_release_namespace }}"
+      spec:
+        targetRefs:
+          - group: gateway.networking.k8s.io
+            kind: Gateway
+            name: envoy-gateway
+        compressor:
+          - type: Gzip
   when: inventory_hostname == groups['kube_master'][0]
   register: result
   changed_when: result is not succeeded
