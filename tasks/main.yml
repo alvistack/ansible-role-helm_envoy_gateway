@@ -112,7 +112,8 @@
       kind: GatewayClass
       metadata:
         name: envoy-gateway
-        gateway.networking.k8s.io/is-default-class: "true"
+        annotations:
+          gateway.networking.k8s.io/is-default-class: "true"
       spec:
         controllerName: gateway.envoyproxy.io/gatewayclass-controller
   when: inventory_hostname == groups['kube_master'][0]
