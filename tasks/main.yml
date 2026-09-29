@@ -215,6 +215,8 @@
           values:
             - name: Strict-Transport-Security
               value: max-age=63072000; includeSubDomains; preload
+            - name: Content-Security-Policy
+              value: "default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob:; frame-ancestors 'self';"
   when: inventory_hostname == groups['kube_master'][0]
   register: result
   changed_when: result is not succeeded
