@@ -14,6 +14,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# ProxyProtocol configures the Proxy Protocol settings.
+helm_envoy_gateway_proxy_protocol:
+  optional: true
+
+# Enables or disables the X-Forwarded-For.
+helm_envoy_gateway_client_ip_detection:
+  xForwardedFor:
+    numTrustedHops: 1
+    disableXForwardedForAppend: false
+
 # Release name to manage.
 helm_envoy_gateway_helm_release_name: envoy-gateway
 
@@ -27,38 +37,38 @@ helm_envoy_gateway_helm_release_values:
       image:
         repository: docker.io/envoyproxy/gateway
       imagePullPolicy: IfNotPresent
-#      securityContext:
-#        allowPrivilegeEscalation: true
-#        privileged: true
+      securityContext:
+        allowPrivilegeEscalation: true
+        privileged: true
       replicas: 1
-#  service:
-#    type: NodePort
-#  config:
-#    envoyGateway:
-#      envoyProxy:
-#        provider:
-#          type: Kubernetes
-#          kubernetes:
-#            useListenerPortAsContainerPort: true
-#            envoyDeployment:
-#              replicas: 1
-#              patch:
-#                type: StrategicMerge
-#                value:
-#                  spec:
-#                    template:
-#                      spec:
-#                        hostNetwork: true
-#                        dnsPolicy: ClusterFirstWithHostNet
-#                        securityContext:
-#                          allowPrivilegeEscalation: true
-#                          privileged: true
-#                          sysctls: []
-#                        containers:
-#                          - name: envoy
-#                            securityContext:
-#                              allowPrivilegeEscalation: true
-#                              privileged: true
-#                              sysctls: []
-#            envoyService:
-#              type: NodePort
+  service:
+    type: NodePort
+  config:
+    envoyGateway:
+      envoyProxy:
+        provider:
+          type: Kubernetes
+          kubernetes:
+            useListenerPortAsContainerPort: true
+            envoyDeployment:
+              replicas: 1
+              patch:
+                type: StrategicMerge
+                value:
+                  spec:
+                    template:
+                      spec:
+                        hostNetwork: true
+                        dnsPolicy: ClusterFirstWithHostNet
+                        securityContext:
+                          allowPrivilegeEscalation: true
+                          privileged: true
+                          sysctls: []
+                        containers:
+                          - name: envoy
+                            securityContext:
+                              allowPrivilegeEscalation: true
+                              privileged: true
+                              sysctls: []
+            envoyService:
+              type: NodePort
